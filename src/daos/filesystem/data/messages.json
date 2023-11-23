@@ -1,0 +1,32 @@
+[
+    {
+        "user": "Pablo",
+        "message": "Hola, ¿qué tal?",
+        "timestamp": "2023-11-01T08:30:00",
+        "readStatus": "unread"
+    },
+    {
+        "user": "Maria",
+        "message": "¡Descuento especial del 20% en todos los productos hoy!",
+        "timestamp": "2023-11-02T12:15:00",
+        "type": "offer"
+    },
+    {
+        "user": "Victor",
+        "message": "Tengo un problema con mi pedido. ¿Pueden ayudarme?",
+        "timestamp": "2023-11-03T14:45:00",
+        "status": "open"
+    },
+    {
+        "user": "Felipe",
+        "message": "Este producto es increíble. ¡Lo recomiendo!",
+        "timestamp": "2023-11-04T10:00:00",
+        "rating": 5
+    },
+    {
+        "user": "Victoria",
+        "message": "Hemos actualizado nuestros términos y condiciones. Por favor, revíselos.",
+        "timestamp": "2023-11-05T09:30:00",
+        "type": "info"
+    }
+]

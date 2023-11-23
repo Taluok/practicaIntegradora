@@ -1,4 +1,4 @@
-// import './daos/mongodb/connection.js';
+import './daos/mongodb/connection.js';
 import express from 'express';
 import morgan from 'morgan';
 import productsRouter from './routes/product.router.js';

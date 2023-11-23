@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const connectionString = "mongodb://127.0.0.1:27017/coder47345";
+const connectionString = "mongodb://127.0.0.1:27017/ecommerce";
 
 export const initMongoDB = async () => {
     try {
