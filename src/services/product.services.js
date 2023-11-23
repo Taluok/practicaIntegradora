@@ -1,5 +1,5 @@
 import { isValidObjectId } from 'mongoose';
-import { ProductModel } from './models/product.model.js';
+import { ProductModel } from '../daos/mongodb/models/products.model.js';
 
 export default class ProductDaoMongoDB {
     async getAll() {

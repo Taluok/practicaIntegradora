@@ -1,5 +1,6 @@
 // services/messages.services.js
-import MessageDAO from '../dao/message.dao.js';
+import MessageDAO from '../daos/filesystem/message.dao.js';
+
 
 class MessageService {
     async getAllMessages() {
