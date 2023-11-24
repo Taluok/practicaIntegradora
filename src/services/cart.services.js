@@ -1,9 +1,10 @@
-import CartDAO from '../dao/carts.dao.js';
+import CartDao from '../daos/filesystem/carts.dao.js';
+
 
 class CartService {
     async getCartByUserId(userId) {
         try {
-            const cart = await CartDAO.getCartByUserId(userId);
+            const cart = await CartDao.getCartByUserId(userId);
             return cart;
         } catch (error) {
             console.error(`Error getting cart for user with ID ${userId}:`, error.message);
@@ -33,7 +34,7 @@ class CartService {
 
     async clearCart(userId) {
         try {
-            const clearedCart = await CartDAO.clearCart(userId);
+            const clearedCart = await CartDao.clearCart(userId);
             return clearedCart;
         } catch (error) {
             console.error(`Error clearing cart for user with ID ${userId}:`, error.message);

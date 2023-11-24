@@ -1,21 +1,25 @@
-import express from 'express';
-import MessageController from '../controllers/messages.controllers.js';
 
-const router = express.Router();
+class MessageController {
+    static async getAllMessages(req, res, next) {
+        // Implementa la lógica para obtener todos los mensajes
+    }
 
-// Ruta para obtener todos los mensajes
-router.get('/', MessageController.getAllMessages);
+    static async getMessageById(req, res, next) {
+        // Implementa la lógica para obtener un mensaje por ID
+    }
 
-// Ruta para obtener un mensaje por ID
-router.get('/:id', MessageController.getMessageById);
+    static async createMessage(req, res, next) {
+        // Implementa la lógica para crear un nuevo mensaje
+    }
 
-// Ruta para crear un nuevo mensaje
-router.post('/', MessageController.createMessage);
+    static async updateMessage(req, res, next) {
+        // Implementa la lógica para actualizar un mensaje existente
+    }
 
-// Ruta para actualizar un mensaje existente
-router.put('/:id', MessageController.updateMessage);
+    static async deleteMessage(req, res, next) {
+        // Implementa la lógica para eliminar un mensaje
+    }
+}
 
-// Ruta para eliminar un mensaje
-router.delete('/:id', MessageController.deleteMessage);
+export default MessageController;
 
-export default router;

@@ -1,4 +1,4 @@
-// dao/models/cartsModel.js
+
 import mongoose from 'mongoose';
 
 const cartSchema = new mongoose.Schema({

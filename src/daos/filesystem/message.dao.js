@@ -1,5 +1,5 @@
-// dao/message.dao.js
-import MessagesModel from '../models/messages.model.js';
+
+import MessagesModel from '../mongodb/models/messages.model.js';
 
 class MessageDAO {
     async getAllMessages() {

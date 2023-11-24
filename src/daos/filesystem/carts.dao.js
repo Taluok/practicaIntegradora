@@ -1,6 +1,6 @@
 let cartsDatabase = [];
 
-export class CartsDao {
+export class CartDao {
     static getAll() {
         return cartsDatabase;
     }
@@ -30,5 +30,7 @@ export class CartsDao {
             return deletedCart[0];
         }
         return null; 
-    }
+    };
 }
+
+export default CartDao;
