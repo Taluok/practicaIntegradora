@@ -1,53 +1,54 @@
-import express from 'express';
-import {__dirname} from './utils.js';
-import handlebars from 'express-handlebars';
-import { Server } from 'socket.io';
-import viewRouter from './routes/view.router.js';
-import productsRouter from './routes/product.router.js';
-import cartsRouter from './routes/carts.router.js';
-import { ProductDaoFS } from '../src/daos/filesystem/product.dao.js';
-const productDaoFs = new ProductDaoFS('./data/products.json');
-
+import express, { urlencoded } from "express";
+import router from "./routes/index.js";
+import mongoose from "mongoose";
+import handlebars from "express-handlebars";
+import __dirname from './utils.js';
+import http from 'http';
+import { Server } from "socket.io";
 
 const app = express();
-app.use(express.static('data'));
+const server = http.createServer(app);
+const io = new Server(server);
+const PORT = process.env.PORT || 8080;
+
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(urlencoded({extended: true}));
 
 app.use(express.static(__dirname + '/public'));
-app.engine('handlebars', handlebars.engine());
 
+app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
-app.use('/api/products', productsRouter);
-app.use('/api/carts', cartsRouter);
 
+app.use('/', router);
 
-app.use('/', viewRouter);
+io.on('connection', socket => {
+    console.log('Nuevo cliente conectado');
+    socket.on('disconnect', () => {
+        console.log('Un cliente se ha desconectado');
+    });
+});
 
-const PORT = 8088;
-const httpServer = app.listen(PORT, ()=> console.log(`🚀 Server en el puerto ${PORT}`));
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
-const socketServer = new Server(httpServer);
+export function getIO() {
+    return io;
+}
 
-socketServer.on('connection', async (socket)=>{
-    console.log('🟢 ¡New Connection', socket.id);
-    socket.on('deleteProduct', async (data)=>{
-        try {
-            const {idProduct} = data;
-            console.log('consola 1 app.js:', typeof idProduct);
-            await productDaoFs.deleteProduct(idProduct);
-            const products = await productDaoFs.getProducts();
-            socketServer.emit('products', products);
-        } catch (error) {
-            socket.emit('deleteProductError', {errorMessage: error.message});
-            console.error(error.message);
-        }
-    })
-})
+const connectMongoDB = async () => {
+    try {
+        await mongoose.connect('mongodb+srv://tanialuduenaok:2023Proyect@taluok.crhrslr.mongodb.net/?retryWrites=true&w=majority');
+        console.log("Conectado con exito a MongoDB usando Moongose.");
+    } catch (error) {
+        console.error("No se pudo conectar a la BD usando Moongose: " + error);
+        process.exit();
+    }
+};
+connectMongoDB();
 
-export default socketServer
 
 
 
