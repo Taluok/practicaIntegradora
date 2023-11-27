@@ -1,11 +1,16 @@
-// controllers/cart.controller.js
-import express from 'express';
-import CartService from '../services/cart.services.js';
+import CartService from '../services/cart.service.js';
 
-const router = express.Router();
+export const getCarts = async (req, res, next) => {
+    try {
+        const { limit } = req.query;
+        const carts = await CartService.getCarts(limit);
+        res.status(200).json(carts);
+    } catch (error) {
+        next(error.message);
+    }
+};
 
-// Ruta para obtener el carrito de un usuario por ID
-router.get('/:userId', async (req, res, next) => {
+export const getCartByUserId = async (req, res, next) => {
     const userId = req.params.userId;
     try {
         const cart = await CartService.getCartByUserId(userId);
@@ -17,10 +22,9 @@ router.get('/:userId', async (req, res, next) => {
     } catch (error) {
         next(error.message);
     }
-});
+};
 
-// Ruta para agregar un producto al carrito de un usuario
-router.post('/:userId/add', async (req, res, next) => {
+export const addToCart = async (req, res, next) => {
     const userId = req.params.userId;
     const { productId, quantity } = req.body;
     try {
@@ -29,10 +33,9 @@ router.post('/:userId/add', async (req, res, next) => {
     } catch (error) {
         next(error.message);
     }
-});
+};
 
-// Ruta para eliminar un producto del carrito de un usuario
-router.post('/:userId/remove', async (req, res, next) => {
+export const removeFromCart = async (req, res, next) => {
     const userId = req.params.userId;
     const productId = req.body.productId;
     try {
@@ -41,10 +44,9 @@ router.post('/:userId/remove', async (req, res, next) => {
     } catch (error) {
         next(error.message);
     }
-});
+};
 
-// Ruta para vaciar el carrito de un usuario
-router.post('/:userId/clear', async (req, res, next) => {
+export const clearCart = async (req, res, next) => {
     const userId = req.params.userId;
     try {
         const clearedCart = await CartService.clearCart(userId);
@@ -52,6 +54,4 @@ router.post('/:userId/clear', async (req, res, next) => {
     } catch (error) {
         next(error.message);
     }
-});
-
-export default router;
+};

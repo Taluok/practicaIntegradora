@@ -1,77 +1,64 @@
-import { isValidObjectId } from 'mongoose';
-import { ProductModel } from '../daos/mongodb/models/products.model.js';
+import ProductDaoMongoDB from '../daos/mongodb/product.dao.js';
 
-export default class ProductDaoMongoDB {
-    async getAll() {
+class ProductService {
+    constructor() {
+        this.productDao = new ProductDaoMongoDB();
+    }
+
+    async getAll(limit) {
         try {
-            const response = await ProductModel.find({});
-            return response;
+            let products = await this.productDao.getAll();
+
+            if (limit) {
+                products = products.slice(0, limit);
+            }
+
+            return products;
         } catch (error) {
+            console.error('Error getting products:', error.message);
             throw error;
         }
     }
 
     async getById(id) {
         try {
-            if (!isValidObjectId(id)) {
-                throw new Error('ID no válido');
-            }
-
-            const response = await ProductModel.findById(id);
-            if (!response) {
-                throw new Error(`Producto con ID: ${id} no encontrado`);
-            }
-
-            return response;
+            const product = await this.productDao.getById(id);
+            return product;
         } catch (error) {
+            console.error(`Error getting product with ID ${id}:`, error.message);
             throw error;
         }
     }
 
-    async create(obj) {
+    async create(productData) {
         try {
-            const response = await ProductModel.create(obj);
-            return response;
+            const newProduct = await this.productDao.create(productData);
+            return newProduct;
         } catch (error) {
+            console.error('Error creating product:', error.message);
             throw error;
         }
     }
 
-    async update(id, obj) {
+    async update(id, productData) {
         try {
-            if (!isValidObjectId(id)) {
-                throw new Error('ID no válido');
-            }
-
-            const product = await ProductModel.findById(id);
-            if (!product) {
-                throw new Error(`Producto con ID: ${id} no encontrado`);
-            }
-
-            // Realizar las actualizaciones necesarias en el objeto 'product'
-            product.property = obj.property;
-
-            const response = await product.save();
-            return response;
+            const updatedProduct = await this.productDao.update(id, productData);
+            return updatedProduct;
         } catch (error) {
+            console.error(`Error updating product with ID ${id}:`, error.message);
             throw error;
         }
     }
 
     async delete(id) {
         try {
-            if (!isValidObjectId(id)) {
-                throw new Error('ID no válido');
-            }
-
-            const response = await ProductModel.findByIdAndDelete(id);
-            if (!response) {
-                throw new Error(`Producto con ID: ${id} no encontrado`);
-            }
-
-            return response;
+            const deletedProduct = await this.productDao.delete(id);
+            return deletedProduct;
         } catch (error) {
+            console.error(`Error deleting product with ID ${id}:`, error.message);
             throw error;
         }
     }
 }
+
+export default new ProductService();

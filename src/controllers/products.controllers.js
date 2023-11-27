@@ -1,65 +1,74 @@
-import * as service from '../services/product.services.js';
+import ProductService from '../services/product.service.js';
 
-// Middleware de manejo de errores
 export const errorHandler = (err, req, res, next) => {
     console.error(err);
-    res.status(500).json({ error: err.message || 'Error interno del servidor' });
+    res.status(500).json({ error: err.message || 'Internal Server Error' });
 };
 
-// Obtengo todos los productos
 export const getAll = async (req, res, next) => {
     try {
-        const response = await service.getAll();
-        res.status(200).json(response);
+        const { limit } = req.query;
+        const products = await ProductService.getAll(limit);
+        res.status(200).json(products);
     } catch (error) {
         next(error);
     }
 };
 
-// Obtengo un producto por ID
 export const getById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const response = await service.getById(id);
-        if (!response) res.status(404).json({ msg: '¡Producto no encontrado!' });
-        else res.status(200).json(response);
+        const product = await ProductService.getById(id);
+
+        if (!product) {
+            res.status(404).json({ msg: 'Product not found' });
+        } else {
+            res.status(200).json(product);
+        }
     } catch (error) {
         next(error);
     }
 };
 
-// Crea un nuevo producto
 export const create = async (req, res, next) => {
     try {
-        // Valida req.body usando Joi si es necesario
+        const newProduct = await ProductService.create(req.body);
 
-        const newProd = await service.create(req.body);
-        if (!newProd) res.status(500).json({ error: 'Error al crear el producto' });
-        else res.status(201).json(newProd); // 201 Creado para una creación exitosa
+        if (!newProduct) {
+            res.status(500).json({ error: 'Error creating the product' });
+        } else {
+            res.status(201).json(newProduct);
+        }
     } catch (error) {
         next(error);
     }
 };
 
-// Actualiza un producto por ID
 export const update = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const prodUpd = await service.update(id, req.body);
-        if (!prodUpd) res.status(404).json({ msg: 'Error al actualizar el producto' });
-        else res.status(200).json(prodUpd);
+        const updatedProduct = await ProductService.update(id, req.body);
+
+        if (!updatedProduct) {
+            res.status(404).json({ msg: 'Error updating the product' });
+        } else {
+            res.status(200).json(updatedProduct);
+        }
     } catch (error) {
         next(error);
     }
 };
 
-// Elimina un producto por ID
 export const remove = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const prodDel = await service.remove(id);
-        if (!prodDel) res.status(404).json({ msg: 'Error al eliminar el producto' });
-        else res.status(200).json({ msg: `Producto con ID: ${id} eliminado` });
+        const deletedProduct = await ProductService.delete(id);
+
+        if (!deletedProduct) {
+            res.status(404).json({ msg: 'Error deleting the product' });
+        } else {
+            res.status(200).json({ msg: `Product with ID: ${id} deleted` });
+        }
     } catch (error) {
         next(error);
     }
