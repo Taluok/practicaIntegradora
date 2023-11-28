@@ -5,17 +5,22 @@ class ProductService {
         this.productDao = new ProductDaoMongoDB();
     }
 
-    async getAll(limit) {
+    async getAllWithPagination(filter, options) {
         try {
-            let products = await this.productDao.getAll();
-
-            if (limit) {
-                products = products.slice(0, limit);
-            }
-
+            const products = await this.productDao.getAllWithPagination(filter, options);
             return products;
         } catch (error) {
-            console.error('Error getting products:', error.message);
+            console.error('Error getting products with pagination:', error.message);
+            throw error;
+        }
+    }
+
+    async getCount(filter) {
+        try {
+            const count = await this.productDao.getCount(filter);
+            return count;
+        } catch (error) {
+            console.error('Error getting product count:', error.message);
             throw error;
         }
     }
@@ -62,3 +67,4 @@ class ProductService {
 }
 
 export default new ProductService();
+

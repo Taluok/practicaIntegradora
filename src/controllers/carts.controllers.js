@@ -1,57 +1,66 @@
 import CartService from '../services/cart.service.js';
 
-export const getCarts = async (req, res, next) => {
-    try {
-        const { limit } = req.query;
-        const carts = await CartService.getCarts(limit);
-        res.status(200).json(carts);
-    } catch (error) {
-        next(error.message);
-    }
+export const errorHandler = (err, req, res, next) => {
+    console.error(err);
+    res.status(500).json({ error: err.message || 'Internal Server Error' });
 };
 
-export const getCartByUserId = async (req, res, next) => {
-    const userId = req.params.userId;
+export const removeProductFromCart = async (req, res, next) => {
     try {
-        const cart = await CartService.getCartByUserId(userId);
-        if (!cart) {
-            res.status(404).json({ msg: 'Cart not found' });
-        } else {
-            res.status(200).json(cart);
-        }
-    } catch (error) {
-        next(error.message);
-    }
-};
+        const { cid, pid } = req.params;
 
-export const addToCart = async (req, res, next) => {
-    const userId = req.params.userId;
-    const { productId, quantity } = req.body;
-    try {
-        const updatedCart = await CartService.addToCart(userId, productId, quantity);
+        // Llama a la función correspondiente en CartService para eliminar el producto del carrito
+        const updatedCart = await CartService.removeProductFromCart(cid, pid);
+
+        // Enviar la respuesta
         res.status(200).json(updatedCart);
     } catch (error) {
-        next(error.message);
+        // Manejar errores
+        next(error);
     }
 };
 
-export const removeFromCart = async (req, res, next) => {
-    const userId = req.params.userId;
-    const productId = req.body.productId;
+export const updateCart = async (req, res, next) => {
     try {
-        const updatedCart = await CartService.removeFromCart(userId, productId);
+        const { cid } = req.params;
+
+        // Llama a la función correspondiente en CartService para actualizar el carrito con nuevos productos
+        const updatedCart = await CartService.updateCart(cid, req.body.products);
+
+        // Enviar la respuesta
         res.status(200).json(updatedCart);
     } catch (error) {
-        next(error.message);
+        // Manejar errores
+        next(error);
     }
 };
 
-export const clearCart = async (req, res, next) => {
-    const userId = req.params.userId;
+export const updateCartItem = async (req, res, next) => {
     try {
-        const clearedCart = await CartService.clearCart(userId);
-        res.status(200).json(clearedCart);
+        const { cid, pid } = req.params;
+
+        // Llama a la función correspondiente en CartService para actualizar la cantidad de un producto en el carrito
+        const updatedCart = await CartService.updateCartItem(cid, pid, req.body.quantity);
+
+        // Enviar la respuesta
+        res.status(200).json(updatedCart);
     } catch (error) {
-        next(error.message);
+        // Manejar errores
+        next(error);
+    }
+};
+
+export const emptyCart = async (req, res, next) => {
+    try {
+        const { cid } = req.params;
+
+        // Llama a la función correspondiente en CartService para vaciar el carrito
+        await CartService.emptyCart(cid);
+
+        // Enviar la respuesta
+        res.status(200).json({ msg: `Cart with ID: ${cid} emptied` });
+    } catch (error) {
+        // Manejar errores
+        next(error);
     }
 };

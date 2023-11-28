@@ -1,36 +1,28 @@
-let cartsDatabase = [];
+import { CartModel } from '../models/cart.model.js';
 
 export class CartDao {
-    static getAll() {
-        return cartsDatabase;
+    static async getAll() {
+        return CartModel.find();
     }
 
-    static getById(cartId) {
-        return cartsDatabase.find(cart => cart.id === cartId);
+    static async getById(cartId) {
+        return CartModel.findById(cartId).populate('products.product');
     }
 
-    static create(cart) {
-        cartsDatabase.push(cart);
-        return cart;
+    static async create(cart) {
+        const newCart = new CartModel(cart);
+        await newCart.save();
+        return newCart;
     }
 
-    static update(cartId, updatedCart) {
-        const index = cartsDatabase.findIndex(cart => cart.id === cartId);
-        if (index !== -1) {
-            cartsDatabase[index] = updatedCart;
-            return updatedCart;
-        }
-        return null; 
+    static async update(cartId, updatedCart) {
+        const result = await CartModel.findByIdAndUpdate(cartId, updatedCart, { new: true });
+        return result;
     }
 
-    static delete(cartId) {
-        const index = cartsDatabase.findIndex(cart => cart.id === cartId);
-        if (index !== -1) {
-            const deletedCart = cartsDatabase.splice(index, 1);
-            return deletedCart[0];
-        }
-        return null; 
-    };
+    static async delete(cartId) {
+        const result = await CartModel.findByIdAndDelete(cartId);
+        return result;
+    }
 }
 
-export default CartDao;

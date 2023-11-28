@@ -1,4 +1,5 @@
-import CartDao from '../daos/filesystem/carts.dao.js';
+import CartDao from '../daos/mongodb/carts.dao.js';
+import ProductService from '../services/product.service.js';
 
 class CartService {
     async getCarts(limit) {
@@ -18,7 +19,7 @@ class CartService {
 
     async getCartByUserId(userId) {
         try {
-            const cart = await CartDao.getCartByUserId(userId);
+            const cart = await CartDao.getCartByUserId(userId).populate('products.product');
             return cart;
         } catch (error) {
             console.error(`Error getting cart for user with ID ${userId}:`, error.message);
@@ -28,6 +29,14 @@ class CartService {
 
     async addToCart(userId, productId, quantity) {
         try {
+            // Verificar si el producto existe
+            const product = await ProductService.getById(productId);
+
+            if (!product) {
+                throw new Error(`Product with ID ${productId} not found`);
+            }
+
+            // Añadir el producto al carrito
             const updatedCart = await CartDao.addToCart(userId, productId, quantity);
             return updatedCart;
         } catch (error) {
@@ -38,6 +47,14 @@ class CartService {
 
     async removeFromCart(userId, productId) {
         try {
+            // Verificar si el producto existe
+            const product = await ProductService.getById(productId);
+
+            if (!product) {
+                throw new Error(`Product with ID ${productId} not found`);
+            }
+
+            // Eliminar el producto del carrito
             const updatedCart = await CartDao.removeFromCart(userId, productId);
             return updatedCart;
         } catch (error) {
@@ -58,3 +75,4 @@ class CartService {
 }
 
 export default new CartService();
+

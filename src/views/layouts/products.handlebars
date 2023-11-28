@@ -1,23 +1,17 @@
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Productos</title>
-</head>
-
-<body>
-    <h1>Lista de Productos</h1>
-
-    {{#each products}}
+{{!-- Renderizar la lista de productos --}}
+{{#each products}}
     <div class="product">
         <h2>{{name}}</h2>
-        <p>Precio: {{price}} USD</p>
-    </div>
-    {{/each}}
-</body>
+        <p>{{description}}</p>
+        <p>Price: ${{price}}</p>
 
-</html>
+        {{!-- Botón para ver detalles del producto --}}
+        <a href="/products/{{id}}">Ver detalles</a>
+
+        {{!-- Botón para agregar al carrito (sin abrir una nueva página) --}}
+        <form action="/carts/add" method="post">
+            <input type="hidden" name="productId" value="{{id}}">
+            <input type="submit" value="Agregar al carrito">
+        </form>
+    </div>
+{{/each}}
