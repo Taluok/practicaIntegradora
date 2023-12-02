@@ -38,6 +38,8 @@ class CartService {
 
             // Añadir el producto al carrito
             const updatedCart = await CartDao.addToCart(userId, productId, quantity);
+
+            // Devolver el carrito actualizado
             return updatedCart;
         } catch (error) {
             console.error(`Error adding product to cart for user with ID ${userId}:`, error.message);
@@ -56,6 +58,8 @@ class CartService {
 
             // Eliminar el producto del carrito
             const updatedCart = await CartDao.removeFromCart(userId, productId);
+
+            // Devolver el carrito actualizado
             return updatedCart;
         } catch (error) {
             console.error(`Error removing product from cart for user with ID ${userId}:`, error.message);
@@ -66,6 +70,8 @@ class CartService {
     async clearCart(userId) {
         try {
             const clearedCart = await CartDao.clearCart(userId);
+
+            // Devolver el carrito limpio
             return clearedCart;
         } catch (error) {
             console.error(`Error clearing cart for user with ID ${userId}:`, error.message);
@@ -75,4 +81,5 @@ class CartService {
 }
 
 export default new CartService();
+
 
