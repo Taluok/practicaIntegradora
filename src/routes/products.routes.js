@@ -10,10 +10,13 @@ import * as productControllers from '../controllers/products.controllers.js';
 
 const router = express.Router();
 
-router.get('/', productControllers.getAll);
-router.post('/', productControllers.create);
-router.get('/:id', productControllers.getById);
-router.put('/:id', productControllers.update);
-router.delete('/:id', productControllers.remove);
+router.get('/', productControllers.getAllWithPagination);
+router.post('/', productControllers.createProduct);
+router.get('/:id', productControllers.getProductById);
+router.put('/:id', productControllers.updateProduct);
+router.delete('/:id', productControllers.removeProduct);
 
 export default router;
+
+
+

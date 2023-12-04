@@ -1,4 +1,4 @@
-import CartDao from '../daos/mongodb/filesystem/carts.dao.js';
+import CartDao from '../daos/mongodb/carts.dao.js';
 import ProductService from '../services/product.service.js';
 
 class CartService {

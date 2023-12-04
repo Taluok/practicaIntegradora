@@ -1,6 +1,7 @@
-import { CartModel } from '../models/cart.model.js';
+import { CartModel } from '../../daos/mongodb/models/carts.model.js';
 
-export class CartDao {
+
+export default class CartDao {
     static async getAll() {
         return CartModel.find();
     }

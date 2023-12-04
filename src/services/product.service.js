@@ -1,4 +1,4 @@
-import ProductDaoMongoDB from '../daos/mongodb/filesystem/product.dao.js';
+import ProductDaoMongoDB from '../daos/mongodb/product.dao.js';
 
 class ProductService {
     constructor() {

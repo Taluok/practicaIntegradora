@@ -5,7 +5,9 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch .",
+    "start": "node src/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,8 +17,6 @@
     "express-handlebars": "^7.1.2",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.1",
-    "mongoose-paginate-v2": "^1.7.4",
-    "morgan": "^1.10.0",
     "socket.io": "^4.7.2"
   }
 }
