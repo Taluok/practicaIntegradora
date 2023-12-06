@@ -1,34 +1,55 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const socket = io();
+// Utiliza desestructuración para extraer los elementos del formulario
+const form = document.getElementById("form");
+const {
+    title: inputTitle,
+    description: inputDescription,
+    code: inputCode,
+    price: inputPrice,
+    stock: inputStock,
+    category: inputCategory,
+    products: inputProducts,
+} = form.elements;
 
-    // Manejar la recepción de productos actualizados desde el servidor
-    socket.on('listUpdate', (products) => {
-        // Limpiar la lista de productos
-        const productList = document.querySelector('ul');
-        productList.innerHTML = '';
+// Conecta al servidor de sockets
+const socketClient = io();
 
-        // Agregar productos actualizados a la lista
-        products.forEach((product) => {
-            const productElement = document.createElement('li');
-            productElement.innerText = `${product.title} - ${product.description} - $${product.price}`;
-            productList.appendChild(productElement);
-        });
-    });
+// Escucha el evento "saludoDesdeBack" y envía una respuesta
+socketClient.on("saludoDesdeBack", (msg) => {
+    console.log(msg);
+    socketClient.emit("respuestaDesdeFront", "Muchas gracias");
+});
 
-    // Manejar el envío del formulario para agregar productos
-    const productForm = document.getElementById('productForm');
-    productForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const formData = new FormData(productForm);
-        const productData = {};
-        formData.forEach((value, key) => {
-            productData[key] = value;
-        });
+// Maneja el envío de formulario
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-        // Emitir la actualización de productos al servidor a través de WebSockets
-        socket.emit('addProduct', productData);
+    // Obtén los valores de los inputs
+    const title = inputTitle.value;
+    const description = inputDescription.value;
+    const code = inputCode.value;
+    const price = inputPrice.value;
+    const stock = inputStock.value;
+    const category = inputCategory.value;
 
-        // Limpiar el formulario
-        productForm.reset();
-    });
+    // Crea el objeto de producto
+    const product = { title, description, code, price, stock, category };
+
+    // Imprime en consola el producto a enviar
+    console.log("Enviando producto:", product);
+
+    // Emite el evento 'newProduct' con el objeto del producto
+    socketClient.emit("newProduct", product);
+});
+
+// Escucha el evento 'arrayProducts' y actualiza el contenido en la página
+socketClient.on("arrayProducts", (productsArray) => {
+    const infoProducts = productsArray
+        .map((p) => `${p.title} - $${p.price}`)
+        .join("<br>");
+    inputProducts.innerHTML = infoProducts;
+});
+
+// Escucha el evento 'message' y muestra el mensaje en la consola
+socketClient.on("message", (msg) => {
+    console.log(msg);
 });
