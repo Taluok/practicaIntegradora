@@ -8,7 +8,6 @@ export default class ProductDaoMongoDB {
             return response;
         } catch (error) {
             console.error("Error al obtener todos los productos:", error);
-            throw new Error("Error en la obtención de productos");
         }
     }
 
@@ -19,7 +18,6 @@ export default class ProductDaoMongoDB {
             return response;
         } catch (error) {
             console.error("Error al obtener el producto por ID:", error);
-            throw new Error("Error en la obtención del producto por ID");
         }
     }
 
@@ -30,7 +28,6 @@ export default class ProductDaoMongoDB {
             return response;
         } catch (error) {
             console.error("Error al crear un nuevo producto:", error);
-            throw new Error("Error en la creación del producto");
         }
     }
 
@@ -43,7 +40,6 @@ export default class ProductDaoMongoDB {
             return response;
         } catch (error) {
             console.error("Error al actualizar el producto por ID:", error);
-            throw new Error("Error en la actualización del producto por ID");
         }
     }
 
@@ -54,7 +50,6 @@ export default class ProductDaoMongoDB {
             return response;
         } catch (error) {
             console.error("Error al eliminar el producto por ID:", error);
-            throw new Error("Error en la eliminación del producto por ID");
         }
     }
 }

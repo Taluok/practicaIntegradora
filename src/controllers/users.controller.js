@@ -8,7 +8,7 @@ export const getById = async (req, res, next) => {
 
         res.json(user);
     } catch (error) {
-        next(error);
+        next(error.message);
     }
 };
 
@@ -19,7 +19,7 @@ export const getByEmail = async (req, res, next) => {
         if (!user) throw new Error("Usuario no encontrado!!");
         res.json(user);
     } catch (error) {
-        next(error);
+        next(error.message);
     }
 };
 
@@ -29,7 +29,7 @@ export const getAll = async (req, res, next) => {
         const response = await userService.getAllUsers(page, limit);
         res.json(response);
     } catch (error) {
-        next(error);
+        next(error.message);
     }
 };
 
@@ -43,7 +43,7 @@ export const create = async (req, res, next) => {
                 data: newUser,
             });
     } catch (error) {
-        next(error);
+        next(error.message);
     }
 };
 
@@ -68,7 +68,7 @@ export const update = async (req, res, next) => {
             data: userUpdated,
         });
     } catch (error) {
-        next(error);
+        next(error.message);
     }
 };
 
@@ -82,6 +82,6 @@ export const remove = async (req, res, next) => {
             msg: "Usuario eliminado",
         });
     } catch (error) {
-        next(error);
+        next(error.message);
     }
 };

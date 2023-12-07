@@ -49,7 +49,7 @@ export const getAll = async (req, res, next) => {
         });
     } catch (error) {
         const status = 'error';
-        next(error);
+        next(error.message);
     }
 };
 

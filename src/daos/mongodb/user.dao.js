@@ -1,59 +1,55 @@
-import { UserModel } from "./models/user.model.js";
+import UserDaoMongoDB from "../daos/mongodb/user.dao.js";
+const userDao = new UserDaoMongoDB();
 
-export default class UserDaoMongoDB {
-
-
-    async getByEmail(email) {
-        try {
-            const response = await UserModel.find({ email: email });
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
+export const getByIdUser = async (id) => {
+    try {
+        const user = await userDao.getById(id);
+        if (!user) return false;
+        else return user;
+    } catch (error) {
+        console.log(error);
     }
+};
 
-    async getById(id) {
-        try {
-            const response = await UserModel.findById(id).populate("cart");
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
+export const getByEmailUser = async (email) => {
+    try {
+        const user = await userDao.getByEmail(email);
+        if (!user) return false;
+        else return user;
+    } catch (error) {
+        console.log(error);
     }
+};
 
-    async getAll(page = 1, limit = 10) {
-        try {
-            const response = await UserModel.paginate({}, { page, limit });
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
+export const createUser = async (obj) => {
+    try {
+        const newUser = await userDao.create(obj);
+        if (!newUser) throw new Error("Validation Error!");
+        else return newUser;
+    } catch (error) {
+        console.log(error);
     }
+};
 
-    async create(obj) {
-        try {
-            const response = await UserModel.create(obj);
-            return response;
-        } catch (error) {
-            console.log(error);
+export const updateUser = async (id, obj) => {
+    try {
+        let item = await userDao.getById(id);
+        if (!item) {
+            throw new Error("User not found!");
+        } else {
+            const userUpdated = await userDao.update(id, obj);
+            return userUpdated;
         }
+    } catch (error) {
+        console.log(error);
     }
+};
 
-    async update(id, obj) {
-        try {
-            const updatedUser = await UserModel.findOneAndUpdate({ _id: id }, obj, { new: true });
-            return updatedUser;
-        } catch (error) {
-            console.log(error);
-        }
+export const deleteUser = async (id) => {
+    try {
+        const userDeleted = await userDao.delete(id);
+        return userDeleted;
+    } catch (error) {
+        console.log(error);
     }
-
-    async delete(id) {
-        try {
-            const response = await UserModel.findByIdAndDelete(id);
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-}
+};

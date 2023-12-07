@@ -7,8 +7,7 @@ export default class CartDaoMongoDB {
                 products: [],
             });
         } catch (error) {
-            console.log(error);
-            throw new Error("Error al crear el carrito");
+            console.log("Error al crear el carrito");
         }
     }
 
@@ -16,8 +15,7 @@ export default class CartDaoMongoDB {
         try {
             return await CartModel.find({});
         } catch (error) {
-            console.log(error);
-            throw new Error("'error al obtener todos los carts'");
+            console.log("'error al obtener todos los carts'");
         }
     }
 
@@ -25,8 +23,7 @@ export default class CartDaoMongoDB {
         try {
             return await CartModel.findById(id).populate("products.product");
         } catch (error) {
-            console.log(error);
-            throw new Error("error al obtener todos los carts por ID");
+            console.log("error al obtener todos los carts por ID");
         }
     }
 
@@ -34,15 +31,14 @@ export default class CartDaoMongoDB {
         try {
             return await CartModel.findByIdAndDelete(id);
         } catch (error) {
-            console.log(error);
-            throw new Error("error al eliminar el carrito con ID");
+            console.log("error al eliminar el carrito con ID");
         }
     }
 
     async addProdToCart(cart, prodId) {
         try {
             cart.products.push({ product: prodId });
-            await cart.save();
+            cart.save();
             return cart;
         } catch (error) {
             console.log(error);
@@ -55,11 +51,10 @@ export default class CartDaoMongoDB {
             cart.products = cart.products.filter(
                 (p) => p.product._id.toString() !== prod.product._id.toString()
             );
-            await cart.save();
+            cart.save();
             return cart;
         } catch (error) {
-            console.log(error);
-            throw new Error("Error al mover el producto al carrito");
+            console.log("Error al mover el producto al carrito");
         }
     }
 
@@ -70,30 +65,27 @@ export default class CartDaoMongoDB {
             });
             return response;
         } catch (error) {
-            console.log(error);
-            throw new Error("Error al actualizar el carrito");
+            console.log("Error al actualizar el carrito");
         }
     }
 
     async updateProdQuantityToCart(cart, prod, quantity) {
         try {
             prod.quantity = quantity;
-            await cart.save();
+            cart.save();
             return prod;
         } catch (error) {
-            console.log(error);
-            throw new Error("ha ocurrido un error al intentar actualizar la cantidad de un producto en el carrito");
+            console.log("ha ocurrido un error al intentar actualizar la cantidad de un producto en el carrito");
         }
     }
 
     async clearCart(cart) {
         try {
             cart.products = [];
-            await cart.save();
+            cart.save();
             return cart;
         } catch (error) {
-            console.log(error);
-            throw new Error("Error al vaciar el carrito");
+            console.log("Error al vaciar el carrito");
         }
     }
 }
