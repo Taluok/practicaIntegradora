@@ -6,6 +6,6 @@ export const productValidator = (req, res, next) =>{
         req.body.price === undefined || typeof req.body.price !== 'number' ||
         req.body.stock === undefined || typeof req.body.stock !== 'number' ||
         req.body.category === undefined || typeof req.body.category !== 'string' 
-    ) res.status(404).json({ msg: 'Invalid body' });
+    ) res.status(404).json({ msg: 'Hay un error de tipo de variable' });
     else next();
 };

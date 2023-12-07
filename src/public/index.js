@@ -1,55 +1,47 @@
-// Utiliza desestructuración para extraer los elementos del formulario
-const form = document.getElementById("form");
-const {
-    title: inputTitle,
-    description: inputDescription,
-    code: inputCode,
-    price: inputPrice,
-    stock: inputStock,
-    category: inputCategory,
-    products: inputProducts,
-} = form.elements;
+// Importa las funciones necesarias y modifica según tus rutas y configuraciones
+import { cleanForm, getProductList } from './utils.js';
 
-// Conecta al servidor de sockets
-const socketClient = io();
+const socket = io();
 
-// Escucha el evento "saludoDesdeBack" y envía una respuesta
-socketClient.on("saludoDesdeBack", (msg) => {
-    console.log(msg);
-    socketClient.emit("respuestaDesdeFront", "Muchas gracias");
+const productsList = document.getElementById('containerList');
+const add = document.getElementById('add');
+const price = document.getElementById('price');
+const title = document.getElementById('title');
+const description = document.getElementById('description');
+const code = document.getElementById('code');
+const category = document.getElementById('category');
+const idProduct = document.getElementById('idProduct');
+const stock = document.getElementById('stock');
+const btnCargar = document.getElementById('cargar');
+const btnEliminar = document.getElementById('eliminar');
+
+// Utiliza una función para renderizar la lista de productos
+function renderProductList(products) {
+    let infoProducts = '';
+    productsList.innerHTML = `<ul>`;
+    products.forEach(p => {
+        infoProducts += `<li>
+            <strong>Titulo: </strong>${p.title}<br>
+            <strong>Price: </strong>${p.price}<br>
+            <strong>Description: </strong>${p.description}<br>
+            <strong>Category: </strong>${p.category}<br>
+        </li>`;
+    });
+    infoProducts += `</ul>`;
+    productsList.innerHTML = infoProducts;
+}
+
+// Escucha el evento 'products' y actualiza la lista de productos
+socket.on('products', (products) => {
+    renderProductList(products);
+    cleanForm();
 });
 
-// Maneja el envío de formulario
-form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    // Obtén los valores de los inputs
-    const title = inputTitle.value;
-    const description = inputDescription.value;
-    const code = inputCode.value;
-    const price = inputPrice.value;
-    const stock = inputStock.value;
-    const category = inputCategory.value;
-
-    // Crea el objeto de producto
-    const product = { title, description, code, price, stock, category };
-
-    // Imprime en consola el producto a enviar
-    console.log("Enviando producto:", product);
-
-    // Emite el evento 'newProduct' con el objeto del producto
-    socketClient.emit("newProduct", product);
-});
-
-// Escucha el evento 'arrayProducts' y actualiza el contenido en la página
-socketClient.on("arrayProducts", (productsArray) => {
-    const infoProducts = productsArray
-        .map((p) => `${p.title} - $${p.price}`)
-        .join("<br>");
-    inputProducts.innerHTML = infoProducts;
-});
-
-// Escucha el evento 'message' y muestra el mensaje en la consola
-socketClient.on("message", (msg) => {
-    console.log(msg);
+// Maneja el evento click del botón eliminar
+btnEliminar.addEventListener('click', () => {
+    const action = document.getElementById('eliminarForm').getAttribute('data-action');
+    if (action === 'delete') {
+        const idToDelete = parseInt(idProduct.value, 10);
+        socket.emit('deleteProduct', { idProduct: idToDelete });
+    }
 });

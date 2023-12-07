@@ -1,59 +1,61 @@
-import express from "express";
-import handlebars from "express-handlebars";
-import { __dirname } from "./utils.js";
-import productRouter from "./routes/product.router.js";
-import "./db/connection.js";
-import cartRouter from "./routes/cart.router.js";
-import viewRouter from "./routes/views.router.js";
-import { Server } from "socket.io";
+import express from 'express';
+import morgan from 'morgan';
+import userRouter from './routes/users.router.js';
+import productRouter from './routes/product.router.js';
+import cartRouter from './routes/cart.router.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
-const PORT = 8080;
 
-// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/public"));
+app.use(morgan('dev'));
 
-// Rutas para productos y carritos
-app.use("/api/products", productRouter);
-app.use("/api/carts", cartRouter);
+// Configuración para servir archivos estáticos
+app.use(express.static(join(__dirname, 'public')));
 
-// Configuración de Handlebars
-app.engine("handlebars", handlebars());
-app.set("views", __dirname + "/views");
-app.set("view engine", "handlebars");
+// Rutas
+app.use('/users', userRouter);
+app.use('/products', productRouter);
+app.use('/carts', cartRouter);
 
-// Enrutamiento para vistas
-app.use("/", viewRouter);
+// Ruta para la URL raíz
+app.get('/', (req, res) => {
+    res.send('¡Bienvenido a mi aplicación!');
+});
 
-// Creación del servidor HTTP y del servidor de sockets
-const httpServer = app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+app.use(errorHandler);
+
+const PORT = 8080;
+
+app.listen(PORT, () => console.log(`SERVER UP ON PORT ${PORT}`));
+const httpServer = app.listen(PORT, () => console.log(`🚀 Server ok en el puerto ${PORT}`));
+
 const socketServer = new Server(httpServer);
 
-// Array para almacenar productos (deberías considerar persistirlos en una base de datos)
-const products = [];
+socketServer.on('connection', async (socket) => {
+    console.log('🟢 ¡Nueva conexión!', socket.id);
 
-// Manejo de conexiones con sockets
-socketServer.on("connection", (socket) => {
-    console.log(`Usuario conectado ${socket.id}`);
-    
-    // Manejo de desconexión
-    socket.on("disconnect", () => console.log('Usuario desconectado'));
+    socket.on('deleteProduct', async (data) => {
+        try {
+            const { idProduct } = data;
 
-    // Enviar saludo al cliente
-    socket.emit("saludoDesdeBack", "Bienvenido a websocket");
+            await productDaoMongoDB.deleteProduct(idProduct);
 
-    // Manejo de respuesta desde el cliente
-    socket.on("respuestaDesdeFront", (msg) => console.log(msg));
-
-    // Manejo de nuevo producto desde el cliente
-    socket.on("newProduct", (product) => {
-        console.log("Producto recibido en el servidor:", product);
-        products.push(product);
-        socketServer.emit("arrayProducts", products);
+            const products = await productDaoMongoDB.getProducts();
+            socketServer.emit('products', products);
+        } catch (error) {
+            // Emitir un evento de error específico para que el cliente pueda manejarlo
+            socket.emit('deleteProductError', { errorMessage: error.message });
+            console.error('Error al eliminar el producto:', error.message);
+        }
     });
 });
+
+
+export default socketServer;
+
+
 
 
 
